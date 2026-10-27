@@ -82,9 +82,12 @@ main{padding:14px calc(14px + env(safe-area-inset-right,0px)) calc(14px + env(sa
 .card.k-2{border-left-color:var(--amber)}
 .card.k-1{border-left-color:var(--red)}
 .card.prio{background:linear-gradient(90deg,rgba(255,107,107,.07),var(--panel) 160px)}
-.q{padding:12px 14px;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.q{padding:12px 14px;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr) minmax(190px,30%);gap:10px;align-items:start}
 .q:hover{background:var(--panel2)}
 .qt{flex:1;font-weight:600;font-size:14.5px}
+.qref{border-left:1px solid var(--line);padding-left:10px;color:var(--dim);font-size:11.5px;line-height:1.45;overflow-wrap:anywhere}
+.qref b{color:var(--accent2);font-size:10px;letter-spacing:.4px}
+.qref .reg{font-size:10.5px}
 .acs{
   font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   color:var(--dim);background:var(--panel2);border:1px solid var(--line);
@@ -162,7 +165,8 @@ body.flashmode #flash{display:block}
   button,.btn{padding:11px 10px;font-size:13px}
   .chip{padding:9px 14px;font-size:12.5px}
   .rate button{min-width:0;padding:13px 6px;font-size:13px}
-  .q{padding:13px 13px}
+  .q{padding:13px 13px;grid-template-columns:auto minmax(0,1fr)}
+  .qref{grid-column:2;border-left:0;border-top:1px solid var(--line);padding:7px 0 0}
   .fq{font-size:18px}
   .fcard{min-height:54vh;padding:16px}
   .fnav button{padding:14px 8px}
@@ -215,6 +219,7 @@ body.flashmode #flash{display:block}
       <span class="acs" id="facs"></span><span class="sub" id="farea"></span>
     </div>
     <div class="fq" id="fq"></div>
+    <div id="frefs"></div>
     <div class="tapme">tap to reveal answer</div>
     <div class="fa" id="fa"></div>
     <div class="rate" id="frate">
@@ -1734,6 +1739,7 @@ function cardHTML(c){
     <div class="q">
       <span class="acs ${c.prio?"prio":""}">${esc(c.acs)}</span>
       <span class="qt">${esc(c.q)}</span>
+      ${c.src ? `<span class="qref"><b>REFERENCE</b><br>${c.src}</span>` : ""}
     </div>
     <div class="a">
       ${c.a}
@@ -1795,7 +1801,7 @@ function buildDeck(){ deck = visible(); di = 0; showCard(); }
 function showCard(){
   if (!deck.length){
     $("#fq").textContent = "No cards match the current filters.";
-    $("#fa").innerHTML=""; $("#facs").textContent=""; $("#farea").textContent="";
+    $("#fa").innerHTML=""; $("#frefs").innerHTML=""; $("#facs").textContent=""; $("#farea").textContent="";
     $("#fcount").textContent=""; return;
   }
   if (di < 0) di = deck.length-1;
@@ -1806,7 +1812,8 @@ function showCard(){
   $("#facs").className = "acs" + (c.prio ? " prio" : "");
   $("#farea").textContent = AREAS[c.area] || "";
   $("#fq").textContent = c.q;
-  $("#fa").innerHTML = c.a + refsHTML(c);
+  $("#frefs").innerHTML = refsHTML(c);
+  $("#fa").innerHTML = c.a;
   $("#fcount").textContent = `${di+1} / ${deck.length}`;
   const m = marks[c.id]||0;
   $("#frate").querySelectorAll("button").forEach(b => b.classList.toggle("on", +b.dataset.r === m));
