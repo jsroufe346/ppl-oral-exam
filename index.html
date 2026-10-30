@@ -138,6 +138,19 @@ main{padding:14px calc(14px + env(safe-area-inset-right,0px)) calc(14px + env(sa
 #flash{display:none;padding:14px calc(14px + env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) calc(14px + env(safe-area-inset-left,0px));max-width:760px;margin:0 auto}
 body.flashmode #browse{display:none}
 body.flashmode #flash{display:block}
+body.flashmode #references{display:none}
+body.refmode #browse{display:none}
+body.refmode #references{display:block}
+body.refmode #chips,body.refmode #weakBtn,body.refmode #expandBtn{display:none}
+.refintro{color:var(--dim);font-size:13px;margin:4px 0 14px}
+.refcard{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  margin:9px 0;padding:12px 14px;
+}
+.refname{font-weight:700;color:var(--accent2);overflow-wrap:anywhere}
+.refcount{font-size:11px;color:var(--dim);margin-top:3px}
+.reftopics{font-size:13px;margin-top:8px}
+.reftopics b{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
 .fcard{
   background:var(--panel);border:1px solid var(--line);border-radius:16px;
   padding:20px;min-height:46vh;display:flex;flex-direction:column;
@@ -159,6 +172,7 @@ body.flashmode #flash{display:block}
   h1{font-size:15px}
   header .sub{display:none}
   .stats{gap:9px;font-size:10.5px;margin-top:4px}
+  .htop #referencesBtn{padding:9px 10px}
   .controls{margin-top:8px;gap:7px}
   input[type=search]{flex:1 1 110px}
   .chips{padding:8px 0 2px}
@@ -190,6 +204,7 @@ body.flashmode #flash{display:block}
       <h1>PPL Oral Exam Study Guide</h1>
       <div class="sub">ASEL &middot; Cessna 172S G1000 &middot; KBEC &middot; built on the Airplane ACS</div>
     </div>
+    <button id="referencesBtn" aria-pressed="false">References</button>
     <button id="modeBtn">Flashcards</button>
     <button id="resetBtn" title="Clear all confidence ratings">Reset</button>
   </div>
@@ -204,7 +219,7 @@ body.flashmode #flash{display:block}
     <span>Showing <b id="nShown">0</b></span>
   </div>
   <div class="controls">
-    <input type="search" id="q" placeholder="Search questions, answers, FAR cites, ACS codes…" autocomplete="off">
+    <input type="search" id="q" placeholder="Search questions, answers, references, FAR cites, ACS codes…" autocomplete="off">
     <button id="weakBtn" title="Show only Shaky + Review + Unrated">Weak only</button>
     <button id="expandBtn">Expand all</button>
   </div>
@@ -212,6 +227,7 @@ body.flashmode #flash{display:block}
 </header>
 
 <main id="browse"></main>
+<main id="references"></main>
 
 <section id="flash">
   <div class="fcard" id="fcard">
@@ -1785,6 +1801,43 @@ function render(){
   stats();
 }
 
+function renderReferences(){
+  const refs = new Map();
+  for (const c of DATA){
+    const source = document.createElement("div");
+    source.innerHTML = c.src || "";
+    const labels = source.textContent.split("·")
+      .map(label => label.replace(/\s+/g, " ").trim())
+      .filter(Boolean);
+    for (const label of labels){
+      if (!refs.has(label)) refs.set(label, {label, cards:new Set(), topics:new Set()});
+      const ref = refs.get(label);
+      ref.cards.add(c.id);
+      for (const topic of (c.tags || "").split(/\s+/).filter(Boolean)) ref.topics.add(topic);
+    }
+  }
+  const list = [...refs.values()]
+    .map(ref => ({
+      ...ref,
+      topics:[...ref.topics].slice(0, 12)
+    }))
+    .filter(ref => !query || `${ref.label} ${[...ref.topics].join(" ")}`.toLowerCase().includes(query.trim().toLowerCase()))
+    .sort((a,b) => a.label.localeCompare(b.label, undefined, {numeric:true}));
+  if (!list.length){
+    if (document.body.classList.contains("refmode")) $("#nShown").textContent = "0";
+    $("#references").innerHTML = `<div class="empty">No references match your search.</div>`;
+    return;
+  }
+  if (document.body.classList.contains("refmode")) $("#nShown").textContent = list.length;
+  $("#references").innerHTML = `<div class="areahead">References (${list.length})</div>
+    <p class="refintro">Sources cited throughout the study guide, with the related topics shown on each question.</p>
+    ${list.map(ref => `<article class="refcard">
+      <div class="refname">${esc(ref.label)}</div>
+      <div class="refcount">Cited by ${ref.cards.size} ${ref.cards.size === 1 ? "question" : "questions"}</div>
+      <div class="reftopics"><b>Topics</b><br>${esc(ref.topics.join(", "))}${ref.topics.length === 12 ? ", …" : ""}</div>
+    </article>`).join("")}`;
+}
+
 function stats(){
   const t = DATA.length || 1;
   let c3=0,c2=0,c1=0;
@@ -1857,6 +1910,9 @@ $("#shufBtn").onclick = () => { deck.sort(() => Math.random()-0.5); di=0; showCa
 
 /* ---- controls ---- */
 $("#modeBtn").onclick = () => {
+  document.body.classList.remove("refmode");
+  $("#referencesBtn").classList.remove("on");
+  $("#referencesBtn").setAttribute("aria-pressed", "false");
   document.body.classList.toggle("flashmode");
   const on = document.body.classList.contains("flashmode");
   $("#modeBtn").textContent = on ? "Browse" : "Flashcards";
@@ -1874,8 +1930,23 @@ $("#expandBtn").onclick = () => {
   render();
 };
 $("#q").oninput = e => {
-  query = e.target.value; render();
+  query = e.target.value; render(); renderReferences();
   if (document.body.classList.contains("flashmode")) buildDeck();
+};
+$("#referencesBtn").onclick = () => {
+  const on = !document.body.classList.contains("refmode");
+  document.body.classList.remove("flashmode");
+  document.body.classList.toggle("refmode", on);
+  $("#referencesBtn").classList.toggle("on", on);
+  $("#referencesBtn").setAttribute("aria-pressed", String(on));
+  $("#modeBtn").textContent = "Flashcards";
+  $("#modeBtn").classList.remove("on");
+  $("#q").placeholder = on
+    ? "Search references and topics…"
+    : "Search questions, answers, references, FAR cites, ACS codes…";
+  if (on) renderReferences();
+  else render();
+  window.scrollTo(0,0);
 };
 $("#resetBtn").onclick = () => {
   if (confirm("Clear all your confidence ratings?")){ marks = {}; save(); render(); showCard(); }
@@ -1899,6 +1970,7 @@ DATA.sort((a,b) => {
 
 renderChips();
 render();
+renderReferences();
 </script>
 </body>
 </html>
