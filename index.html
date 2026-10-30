@@ -142,10 +142,28 @@ body.flashmode #references{display:none}
 body.refmode #browse{display:none}
 body.refmode #references{display:block}
 body.refmode #chips,body.refmode #weakBtn,body.refmode #expandBtn{display:none}
+body.maneuvermode #browse,body.maneuvermode #references,body.maneuvermode #flash{display:none}
+body.maneuvermode #maneuvers{display:block}
+body.maneuvermode .bar,body.maneuvermode .stats,body.maneuvermode .controls,body.maneuvermode #chips{display:none}
+#maneuvers{display:none}
 .refintro{color:var(--dim);font-size:13px;margin:4px 0 14px}
 .refcard{
   background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
   margin:9px 0;padding:12px 14px;
+}
+.maneuver-group{margin:18px 0 24px}
+.maneuver-group h2{margin:0 0 8px;padding-bottom:7px;border-bottom:2px solid var(--line);font-size:15px;color:var(--accent2)}
+.maneuver-table{width:100%;border-collapse:collapse;font-size:13px}
+.maneuver-table th,.maneuver-table td{padding:9px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.maneuver-table th{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.maneuver-table td:first-child{font-weight:650}
+.maneuver-table .acs-code{white-space:nowrap;color:var(--accent2);font:600 11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.maneuver-note{padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);margin:12px 0;font-size:13px}
+.maneuver-note b{color:var(--accent2)}
+@media (max-width:560px){
+  .maneuver-table{font-size:12px}
+  .maneuver-table th,.maneuver-table td{padding:8px 5px}
+  .maneuver-table .acs-code{white-space:normal}
 }
 .refname{font-weight:700;color:var(--accent2);overflow-wrap:anywhere}
 .refcount{font-size:11px;color:var(--dim);margin-top:3px}
@@ -204,6 +222,7 @@ body.refmode #chips,body.refmode #weakBtn,body.refmode #expandBtn{display:none}
       <h1>PPL Oral Exam Study Guide</h1>
       <div class="sub">ASEL &middot; Cessna 172S G1000 &middot; KBEC &middot; built on the Airplane ACS</div>
     </div>
+    <button id="maneuversBtn" aria-pressed="false">Maneuvers</button>
     <button id="referencesBtn" aria-pressed="false">References</button>
     <button id="modeBtn">Flashcards</button>
     <button id="resetBtn" title="Clear all confidence ratings">Reset</button>
@@ -228,6 +247,77 @@ body.refmode #chips,body.refmode #weakBtn,body.refmode #expandBtn{display:none}
 
 <main id="browse"></main>
 <main id="references"></main>
+<main id="maneuvers">
+  <div class="areahead">Private Pilot Checkride Flight Tasks</div>
+  <p class="refintro">A flight-task study checklist based on the Private Pilot Airplane ACS. The examiner selects tasks under the ACS; be ready to demonstrate each applicable task, not just memorize tolerances.</p>
+
+  <section class="maneuver-group">
+    <h2>IV. Takeoffs, Landings, and Go-Arounds</h2>
+    <table class="maneuver-table">
+      <thead><tr><th>Task</th><th>ACS</th><th>Key standards to study</th></tr></thead>
+      <tbody>
+        <tr><td>Normal takeoff and climb</td><td class="acs-code">PA.IV.A</td><td>Maintain directional control and runway centerline; use POH/AFM liftoff and climb speeds; maintain assigned heading within &plusmn;10&deg;.</td></tr>
+        <tr><td>Soft-field takeoff and climb</td><td class="acs-code">PA.IV.C</td><td>Use the required soft-field technique, lift off as soon as practical, remain in ground effect as needed to accelerate, then climb at the POH/AFM speed; maintain heading within &plusmn;10&deg;.</td></tr>
+        <tr><td>Soft-field approach and landing</td><td class="acs-code">PA.IV.D</td><td>Maintain a stabilized, powered approach; touch down at or within 400 ft beyond the specified point with no side drift and the airplane aligned with the runway.</td></tr>
+        <tr><td>Short-field takeoff and maximum-performance climb</td><td class="acs-code">PA.IV.E</td><td>Use the specified takeoff distance and configuration; lift off at the recommended speed, clear the obstacle at V<sub>X</sub>, then transition to V<sub>Y</sub>; maintain heading within &plusmn;10&deg;.</td></tr>
+        <tr><td>Short-field approach and landing</td><td class="acs-code">PA.IV.F</td><td>Use the POH/AFM approach configuration and speed; touch down at or within 200 ft beyond the specified point, with no side drift and the airplane aligned with the runway.</td></tr>
+        <tr><td>Forward slip to a landing</td><td class="acs-code">PA.IV.M</td><td>Use a forward slip to manage altitude and land at or within 400 ft beyond the specified point, with no side drift and the airplane aligned with the runway. Respect aircraft-specific limitations.</td></tr>
+        <tr><td>Go-around / rejected landing</td><td class="acs-code">PA.IV.N</td><td>Recognize the need to discontinue the landing, apply power, manage configuration, establish a climb, and maintain directional control. Use POH/AFM procedures and speeds.</td></tr>
+        <tr><td>Normal approach and landing</td><td class="acs-code">PA.IV.B</td><td>Maintain a stabilized approach; touch down at or within 400 ft beyond the specified point, with no side drift and the longitudinal axis aligned with the runway centerline.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="maneuver-group">
+    <h2>V. Performance and Ground Reference Maneuvers</h2>
+    <table class="maneuver-table">
+      <thead><tr><th>Task</th><th>ACS</th><th>Key standards to study</th></tr></thead>
+      <tbody>
+        <tr><td>Steep turns</td><td class="acs-code">PA.V.A</td><td>Maintain altitude &plusmn;100 ft, airspeed &plusmn;10 kt, bank angle &plusmn;5&deg;, and rollout heading &plusmn;10&deg;; maintain coordination.</td></tr>
+        <tr><td>Ground reference maneuvers</td><td class="acs-code">PA.V.B</td><td>Rectangular course, S-turns across a road, and turns around a point. Maintain altitude &plusmn;100 ft and airspeed &plusmn;10 kt; correct for wind to achieve the required ground track.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="maneuver-group">
+    <h2>VII. Slow Flight and Stalls</h2>
+    <table class="maneuver-table">
+      <thead><tr><th>Task</th><th>ACS</th><th>Key standards to study</th></tr></thead>
+      <tbody>
+        <tr><td>Slow flight</td><td class="acs-code">PA.VII.A</td><td>Maintain altitude &plusmn;100 ft, heading &plusmn;10&deg;, and airspeed +10/&minus;0 kt; maintain coordination and keep bank within the ACS limit (20&deg;).</td></tr>
+        <tr><td>Power-off stall</td><td class="acs-code">PA.VII.B</td><td>Use approach-to-landing configuration; recognize and recover at the first indication of a stall or as directed. Maintain assigned altitude &plusmn;100 ft and heading &plusmn;10&deg; before the stall; recover promptly with coordinated control inputs.</td></tr>
+        <tr><td>Power-on stall</td><td class="acs-code">PA.VII.C</td><td>Use takeoff/departure configuration; maintain coordination and recover at the first indication or as directed. Maintain assigned altitude &plusmn;100 ft and heading &plusmn;10&deg; before the stall.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="maneuver-group">
+    <h2>VIII. Basic Instrument Maneuvers</h2>
+    <table class="maneuver-table">
+      <thead><tr><th>Task</th><th>ACS</th><th>Key standards to study</th></tr></thead>
+      <tbody>
+        <tr><td>Straight-and-level flight</td><td class="acs-code">PA.VIII.A</td><td>Use the instrument scan to maintain altitude &plusmn;200 ft, heading &plusmn;20&deg;, and airspeed &plusmn;10 kt.</td></tr>
+        <tr><td>Constant-airspeed climbs</td><td class="acs-code">PA.VIII.B</td><td>Maintain assigned heading within &plusmn;10&deg; and airspeed within &plusmn;10 kt; level off at the assigned altitude within &plusmn;200 ft.</td></tr>
+        <tr><td>Constant-airspeed descents</td><td class="acs-code">PA.VIII.C</td><td>Maintain assigned heading within &plusmn;10&deg; and airspeed within &plusmn;10 kt; level off at the assigned altitude within &plusmn;200 ft.</td></tr>
+        <tr><td>Turns to headings</td><td class="acs-code">PA.VIII.D</td><td>Maintain altitude within &plusmn;200 ft, use the assigned bank/turn rate, and roll out within &plusmn;10&deg; of the assigned heading.</td></tr>
+        <tr><td>Recovery from unusual flight attitudes</td><td class="acs-code">PA.VIII.E</td><td>Recognize nose-high and nose-low unusual attitudes and recover promptly using the proper instrument references and coordinated control inputs.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="maneuver-group">
+    <h2>IX. Emergency Operations</h2>
+    <table class="maneuver-table">
+      <thead><tr><th>Task</th><th>ACS</th><th>Key standards to study</th></tr></thead>
+      <tbody>
+        <tr><td>Emergency descent</td><td class="acs-code">PA.IX.A</td><td>Promptly configure and establish the descent using the aircraft checklist/POH; maintain control, clear the area, and level off at the assigned altitude.</td></tr>
+        <tr><td>Emergency approach and landing (simulated)</td><td class="acs-code">PA.IX.B</td><td>Establish best glide, select a suitable landing area, use the checklist and make sound decisions; when practical, touch down at or within 400 ft beyond the specified point, aligned with the landing surface and without side drift.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="maneuver-note"><b>Important:</b> ACS tolerances are evaluation limits, not targets. Use the current ACS edition for complete standards and your aircraft's POH/AFM for speeds, flap settings, and procedures. The examiner may evaluate other applicable tasks too, including traffic patterns, airport operations, navigation/diversion, and preflight/postflight procedures.</div>
+</main>
 
 <section id="flash">
   <div class="fcard" id="fcard">
@@ -1911,8 +2001,12 @@ $("#shufBtn").onclick = () => { deck.sort(() => Math.random()-0.5); di=0; showCa
 /* ---- controls ---- */
 $("#modeBtn").onclick = () => {
   document.body.classList.remove("refmode");
+  document.body.classList.remove("maneuvermode");
   $("#referencesBtn").classList.remove("on");
   $("#referencesBtn").setAttribute("aria-pressed", "false");
+  $("#maneuversBtn").classList.remove("on");
+  $("#maneuversBtn").setAttribute("aria-pressed", "false");
+  $("#q").placeholder = "Search questions, answers, references, FAR cites, ACS codes…";
   document.body.classList.toggle("flashmode");
   const on = document.body.classList.contains("flashmode");
   $("#modeBtn").textContent = on ? "Browse" : "Flashcards";
@@ -1936,9 +2030,12 @@ $("#q").oninput = e => {
 $("#referencesBtn").onclick = () => {
   const on = !document.body.classList.contains("refmode");
   document.body.classList.remove("flashmode");
+  document.body.classList.remove("maneuvermode");
   document.body.classList.toggle("refmode", on);
   $("#referencesBtn").classList.toggle("on", on);
   $("#referencesBtn").setAttribute("aria-pressed", String(on));
+  $("#maneuversBtn").classList.remove("on");
+  $("#maneuversBtn").setAttribute("aria-pressed", "false");
   $("#modeBtn").textContent = "Flashcards";
   $("#modeBtn").classList.remove("on");
   $("#q").placeholder = on
@@ -1946,6 +2043,19 @@ $("#referencesBtn").onclick = () => {
     : "Search questions, answers, references, FAR cites, ACS codes…";
   if (on) renderReferences();
   else render();
+  window.scrollTo(0,0);
+};
+$("#maneuversBtn").onclick = () => {
+  const on = !document.body.classList.contains("maneuvermode");
+  document.body.classList.remove("flashmode", "refmode");
+  document.body.classList.toggle("maneuvermode", on);
+  $("#maneuversBtn").classList.toggle("on", on);
+  $("#maneuversBtn").setAttribute("aria-pressed", String(on));
+  $("#referencesBtn").classList.remove("on");
+  $("#referencesBtn").setAttribute("aria-pressed", "false");
+  $("#modeBtn").textContent = "Flashcards";
+  $("#modeBtn").classList.remove("on");
+  $("#q").placeholder = "Search questions, answers, references, FAR cites, ACS codes…";
   window.scrollTo(0,0);
 };
 $("#resetBtn").onclick = () => {
